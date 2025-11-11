@@ -35,7 +35,7 @@ The solution uses Azure Functions to orchestrate the following pipeline:
 
 1. **Blob Trigger**: Monitors Azure Blob Storage for new document uploads
 2. **Data Source**: Connects to Blob Storage container with change detection
-3. **Skillset**: Applies AI enrichment through chaining together multiple skills:
+3. **Skillset**: Applies AI enrichment through **chaining** together multiple skills:
    - Document Intelligence Layout Skill (text extraction + image normalization)
    - Azure OpenAI Chat Completion Skill (image verbalization)
       - recommend using gpt-5
