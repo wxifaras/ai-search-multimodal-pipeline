@@ -32,7 +32,7 @@ The solution uses Azure Functions to orchestrate the following pipeline:
 
 1. **Blob Trigger**: Monitors Azure Blob Storage for new document uploads
 2. **Data Source**: Connects to Blob Storage container with change detection
-3. **Skillset**: Applies AI enrichment through multiple skills:
+3. **Skillset**: Applies AI enrichment through chaining together multiple skills:
    - Document Intelligence Layout Skill (text extraction + image normalization)
    - Azure OpenAI Chat Completion Skill (image verbalization)
    - Azure OpenAI Embedding Skills (text and image vectorization)
@@ -62,7 +62,6 @@ The solution uses Azure Functions to orchestrate the following pipeline:
 ## Configuration
 
 The solution uses the following configuration sections in `local.settings.json` (or App Settings in Azure):
-
 
 ```json
 {
@@ -99,7 +98,7 @@ The solution uses the following configuration sections in `local.settings.json` 
 
 When the first document is uploaded to the `samples` container:
 
-1. **Infrastructure Setup**: Creates all required Azure AI Search resources:
+1. **AI Search Infrastructure Setup**: Creates all required Azure AI Search resources:
    - Data source connection to Blob Storage
    - Search index with text and vector fields
    - Skillset with Document Intelligence and Azure OpenAI skills
