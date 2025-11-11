@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "AISearch.MultimodalPipeline.Functions": {
+      "commandName": "Project",
+      "commandLineArgs": "--port 7002"
+    }
+  }
+}
