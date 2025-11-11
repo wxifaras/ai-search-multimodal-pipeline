@@ -2,9 +2,9 @@
 
 namespace AISearch.MultimodalPipeline.Functions.Models;
 
-public class OpenAIOptions
+public class AzureOpenAIOptions
 {
-    public const string SectionName = "OpenAI";
+    public const string SectionName = "AzureOpenAI";
 
     [Required]
     public string ResourceUri { get; set; } = string.Empty;

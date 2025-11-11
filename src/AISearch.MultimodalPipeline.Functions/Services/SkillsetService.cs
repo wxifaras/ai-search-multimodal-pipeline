@@ -9,7 +9,7 @@ public class SkillsetService : ISkillsetService
 {
     private readonly SearchIndexerClient _indexerClient;
     private readonly SearchServiceOptions _searchOptions;
-    private readonly OpenAIOptions _openAIOptions;
+    private readonly AzureOpenAIOptions _openAIOptions;
     private readonly AIServicesOptions _aiServicesOptions;
     private readonly BlobStorageOptions _blobOptions;
     private readonly IHttpClientFactory _httpClientFactory;
@@ -17,7 +17,7 @@ public class SkillsetService : ISkillsetService
     public SkillsetService(
         SearchIndexerClient indexerClient,
         IOptions<SearchServiceOptions> searchOptions,
-        IOptions<OpenAIOptions> openAIOptions,
+        IOptions<AzureOpenAIOptions> openAIOptions,
         IOptions<AIServicesOptions> aiServicesOptions,
         IOptions<BlobStorageOptions> blobOptions,
         IHttpClientFactory httpClientFactory)

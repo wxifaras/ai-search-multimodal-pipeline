@@ -22,8 +22,8 @@ builder.Services.AddOptions<BlobStorageOptions>()
            .Bind(builder.Configuration.GetSection(BlobStorageOptions.SectionName))
            .ValidateDataAnnotations();
 
-builder.Services.AddOptions<OpenAIOptions>()
-           .Bind(builder.Configuration.GetSection(OpenAIOptions.SectionName))
+builder.Services.AddOptions<AzureOpenAIOptions>()
+           .Bind(builder.Configuration.GetSection(AzureOpenAIOptions.SectionName))
            .ValidateDataAnnotations();
 
 builder.Services.AddOptions<SearchServiceOptions>()

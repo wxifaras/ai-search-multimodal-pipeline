@@ -12,12 +12,12 @@ namespace AISearch.MultimodalPipeline.Functions.Services;
 public class SearchIndexService : ISearchIndexService
 {
     private readonly SearchIndexClient _indexClient;
-    private readonly OpenAIOptions _openAIOptions;
+    private readonly AzureOpenAIOptions _openAIOptions;
     private readonly ILogger<SearchIndexService> _logger;
 
     public SearchIndexService(
         SearchIndexClient indexClient,
-        IOptions<OpenAIOptions> openAIOptions,
+        IOptions<AzureOpenAIOptions> openAIOptions,
         ILogger<SearchIndexService> logger)
     {
         _indexClient = indexClient;
