@@ -133,7 +133,7 @@ The index (`doc-intelligence-image-verbalization-index`) includes:
 - `content_text`: Extracted text or verbalized image description
 - `content_embedding`: 3072-dimensional vector (text-embedding-3-large)
 - `content_path`: Storage path for extracted images
-- `location_metadata`: Page number and location information
+- `location_metadata`: Page number
 
 ## Deployment
 
