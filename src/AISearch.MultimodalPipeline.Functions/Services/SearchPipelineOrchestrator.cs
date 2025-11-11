@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Azure;
+using Microsoft.Extensions.Logging;
 
 namespace AISearch.MultimodalPipeline.Functions.Services;
 
@@ -42,5 +43,28 @@ public class SearchPipelineOrchestrator : ISearchPipelineOrchestrator
 
         await _indexerService.CreateIndexerAsync(IndexerName, DataSourceName, IndexName, SkillsetName);
         _logger.LogInformation("Indexer created.");
+    }
+
+    public async Task RunIndexerAsync()
+    {
+        _logger.LogInformation("Running indexer for new files...");
+        await _indexerService.RunIndexerAsync(IndexerName);
+        _logger.LogInformation("Indexer run initiated.");
+    }
+
+    public async Task<bool> IsFirstRunAsync()
+    {
+        try
+        {
+            // Try to get indexer status - if it exists, this is not first run
+            await _indexerService.GetIndexerStatusAsync("multimodality-indexer");
+            _logger.LogInformation("Indexer exists. Not first run.");
+            return false;
+        }
+        catch (RequestFailedException ex) when (ex.Status == 404)
+        {
+            _logger.LogInformation("Indexer not found. This is the first run.");
+            return true;
+        }
     }
 }

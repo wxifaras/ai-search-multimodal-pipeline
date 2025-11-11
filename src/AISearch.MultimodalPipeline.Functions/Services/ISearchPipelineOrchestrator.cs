@@ -3,4 +3,6 @@
 public interface ISearchPipelineOrchestrator
 {
     Task SetupPipelineAsync();
+    Task RunIndexerAsync();
+    Task<bool> IsFirstRunAsync();
 }

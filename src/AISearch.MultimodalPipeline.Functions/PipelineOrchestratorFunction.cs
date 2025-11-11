@@ -1,8 +1,10 @@
-using System.IO;
-using System.Threading.Tasks;
 using AISearch.MultimodalPipeline.Functions.Services;
+using Azure;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
+using Services;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace AISearch.MultimodalPipeline.Functions;
 
@@ -25,8 +27,22 @@ public class PipelineOrchestratorFunction
         try
         {
             _logger.LogInformation("Blob trigger function processed blob\n Name:{name} \n Size: {length} Bytes", name, stream.Length);
-            await _orchestrator.SetupPipelineAsync();
-            _logger.LogInformation("Search pipeline setup completed successfully.");
+
+            // Check if this is first run by checking if indexer exists
+            bool isFirstRun = await _orchestrator.IsFirstRunAsync();
+
+            if (isFirstRun)
+            {
+                _logger.LogInformation("First run detected. Setting up complete pipeline infrastructure...");
+                await _orchestrator.SetupPipelineAsync();
+                _logger.LogInformation("Search pipeline setup completed successfully.");
+            }
+            else
+            {
+                _logger.LogInformation("Infrastructure exists. Running indexer for new file: {name}", name);
+                await _orchestrator.RunIndexerAsync();
+                _logger.LogInformation("Indexer run completed for new file.");
+            }
         }
         catch (System.Exception ex)
         {

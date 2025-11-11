@@ -45,7 +45,9 @@ public class IndexerService : IIndexerService
                 BatchSize = 1,
                 Configuration =
                 {
-                    ["allowSkillsetToReadFileData"] = true
+                    ["allowSkillsetToReadFileData"] = true,
+                    ["dataToExtract"] = "contentAndMetadata",
+                    ["parsingMode"] = "default"
                 }
             }
         };
@@ -57,5 +59,26 @@ public class IndexerService : IIndexerService
 
         await _indexerClient.CreateOrUpdateIndexerAsync(indexer);
         _logger.LogInformation($"Indexer '{indexerName}' created or updated successfully.");
+    }
+
+    public async Task RunIndexerAsync(string indexerName, CancellationToken cancellationToken = default)
+    {
+        _logger.LogInformation($"Running indexer '{indexerName}'...");
+        await _indexerClient.RunIndexerAsync(indexerName, cancellationToken);
+        _logger.LogInformation($"Indexer '{indexerName}' started successfully.");
+    }
+
+    public async Task<SearchIndexerStatus> GetIndexerStatusAsync(string indexerName, CancellationToken cancellationToken = default)
+    {
+        var indexer = await _indexerClient.GetIndexerAsync(indexerName, cancellationToken);
+        var status = await _indexerClient.GetIndexerStatusAsync(indexerName, cancellationToken);
+        return status.Value;
+    }
+
+    public async Task ResetIndexerAsync(string indexerName, CancellationToken cancellationToken = default)
+    {
+        _logger.LogInformation($"Resetting indexer '{indexerName}'...");
+        await _indexerClient.ResetIndexerAsync(indexerName, cancellationToken);
+        _logger.LogInformation($"Indexer '{indexerName}' reset successfully.");
     }
 }

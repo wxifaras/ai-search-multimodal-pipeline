@@ -45,7 +45,13 @@ public class DataSourceService : IDataSourceService
             container: container
         )
         {
-            Description = "A data source to store multi-modality documents"
+            Description = "A data source to store multi-modality documents",
+            DataChangeDetectionPolicy = new HighWaterMarkChangeDetectionPolicy("metadata_storage_last_modified"),
+            DataDeletionDetectionPolicy = new SoftDeleteColumnDeletionDetectionPolicy
+            {
+                SoftDeleteColumnName = "metadata_storage_is_deleted",
+                SoftDeleteMarkerValue = "true"
+            }
         };
 
         await _indexerClient.CreateOrUpdateDataSourceConnectionAsync(dataSource);
