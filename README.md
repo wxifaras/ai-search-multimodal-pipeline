@@ -1,6 +1,9 @@
 # AI Search Multimodal Pipeline
 
-An Azure-based serverless solution that processes documents with multimodal content (text and images) using Azure AI Search, Azure Document Intelligence, and Azure OpenAI. This pipeline automatically extracts text and images from documents, generates semantic descriptions of images, and creates searchable embeddings for both text and visual content.
+This is a serverless Azure-based solution for processing complex, multimodal documents (text + images) by combining:
+Azure AI Search for document ingestion, indexing and vector search, Azure Document Intelligence for layout and image/text extraction, and Azure AI Foundry leveraging OpenAI model deployments for both chat completion (to verbalize image/diagram content) and text embedding (to generate searchable vector representations).The pipeline automatically extracts text and images from documents, generates semantic descriptions of visual content, and produces embeddings for both the free-form text and the verbalized image content — enabling advanced retrieval-augmented generation (RAG) scenarios.
+
+To get image verbalizations, each extracted image is passed to the [GenAI Prompt skill (preview)](https://learn.microsoft.com/en-us/azure/search/cognitive-search-skill-genai-prompt) that calls a chat completion model to generate a concise textual description. These descriptions, along with the original document text, are then embedded into vector representations using Azure OpenAI’s text-embedding-3-large model. The result is a single index containing searchable content from both modalities: text and verbalized images.
 
 > **Based on**: This solution is based on the Microsoft Learn tutorial [Multimodal search using Document Layout and image verbalization](https://learn.microsoft.com/en-us/azure/search/tutorial-document-layout-image-verbalization), reimplemented using the **.NET SDKs** instead of REST APIs for a more production-ready, type-safe approach with automated pipeline orchestration via Azure Functions.
 
@@ -12,7 +15,7 @@ This solution implements an intelligent document processing pipeline that:
 
 - **Automatically processes documents** uploaded to Azure Blob Storage
 - **Extracts text and images** using Azure Document Intelligence Layout Skill
-- **Generates AI descriptions** of images, diagrams, and charts using Azure OpenAI GPT-4 Vision
+- **Generates AI descriptions** of images, diagrams, and charts
 - **Creates vector embeddings** for both text chunks and verbalized images
 - **Enables semantic search** across multimodal content using Azure AI Search
 
@@ -32,10 +35,12 @@ The solution uses Azure Functions to orchestrate the following pipeline:
 
 1. **Blob Trigger**: Monitors Azure Blob Storage for new document uploads
 2. **Data Source**: Connects to Blob Storage container with change detection
-3. **Skillset**: Applies AI enrichment through chaining together multiple skills:
+3. **Skillset**: Applies AI enrichment through **chaining** together multiple skills:
    - Document Intelligence Layout Skill (text extraction + image normalization)
    - Azure OpenAI Chat Completion Skill (image verbalization)
+      - recommend using gpt-5
    - Azure OpenAI Embedding Skills (text and image vectorization)
+      - recommend using text-embedding-3-large
 4. **Search Index**: Stores enriched content with vector search capabilities
 5. **Indexer**: Orchestrates the enrichment pipeline and populates the index
 
@@ -54,8 +59,9 @@ The solution uses Azure Functions to orchestrate the following pipeline:
 - .NET 9 SDKs
 - Azure Subscription with the following resources:
   - Azure AI Search (with semantic search enabled)
-  - Azure OpenAI (with text-embedding-3-large and GPT-4 Vision deployments)
-  - Azure AI Services (for Document Intelligence)
+  - Azure AI Foundry (with text-embedding-3-large and any chat completion model, recommend gpt-5)
+     - Can also deploy Azure Open AI
+  - Azure AI services multi-service account (for Document Intelligence)
   - Azure Blob Storage
   - Azure Functions (or local development tools)
  
@@ -82,12 +88,12 @@ The solution uses the following configuration sections in `local.settings.json` 
     "AIServices__CognitiveServicesEndpoint": "https://<your-cognitive-service>.cognitiveservices.azure.com/",
     "AIServices__CognitiveServicesKey": "<your-cognitive-services-key>",
     
-    // Azure OpenAI Settings
-    "OpenAI__ResourceUri": "https://<your-openai-resource>.openai.azure.com/",
-    "OpenAI__ApiKey": "<your-openai-key>",
-    "OpenAI__TextEmbeddingModel": "text-embedding-3-large",
-    "OpenAI__ChatCompletion__ResourceUri": "https://<your-openai-resource>.openai.azure.com/openai/deployments/<your-gpt-deployment>/chat/completions?api-version=2025-01-01-preview",
-    "OpenAI__ChatCompletion__ApiKey": "<your-openai-key>"
+    // Azure AI Foundry OpenAI Settings
+    "AzureOpenAI__ResourceUri": "https://<your-openai-resource>.openai.azure.com/",
+    "AzureOpenAI__ApiKey": "<your-openai-key>",
+    "AzureOpenAI__TextEmbeddingModel": "text-embedding-3-large",
+    "AzureOpenAI__ChatCompletion__ResourceUri": "https://<your-openai-resource>.openai.azure.com/openai/deployments/<your-gpt-deployment>/chat/completions?api-version=2025-01-01-preview",
+    "AzureOpenAI__ChatCompletion__ApiKey": "<your-openai-key>"
   }
 }
 ```
