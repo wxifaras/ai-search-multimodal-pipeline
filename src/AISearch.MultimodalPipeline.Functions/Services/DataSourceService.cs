@@ -25,16 +25,6 @@ public class DataSourceService : IDataSourceService
 
     public async Task CreateBlobDataSourceAsync(string dataSourceName)
     {
-        //try
-        //{
-        //    await _indexerClient.DeleteDataSourceConnectionAsync(dataSourceName);
-        //    _logger.LogInformation("Existing data source deleted.");
-        //}
-        //catch (RequestFailedException ex) when (ex.Status == 404)
-        //{
-        //    _logger.LogInformation("No existing data source to delete.");
-        //}
-
         var container = new SearchIndexerDataContainer(_blobOptions.ContainerName);
         var resourceIdConnectionString = $"ResourceId={_blobOptions.ResourceId};";
 

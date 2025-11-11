@@ -25,16 +25,6 @@ public class IndexerService : IIndexerService
         string targetIndexName,
         string skillsetName)
     {
-        //try
-        //{
-        //    await _indexerClient.DeleteIndexerAsync(indexerName);
-        //    _logger.LogInformation($"Existing indexer '{indexerName}' deleted.");
-        //}
-        //catch (RequestFailedException ex) when (ex.Status == 404)
-        //{
-        //    _logger.LogInformation($"No existing indexer '{indexerName}' to delete.");
-        //}
-
         var indexer = new SearchIndexer(indexerName, dataSourceName, targetIndexName)
         {
             SkillsetName = skillsetName,

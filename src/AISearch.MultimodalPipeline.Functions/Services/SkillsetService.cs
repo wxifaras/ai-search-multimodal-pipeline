@@ -32,19 +32,8 @@ public class SkillsetService : ISkillsetService
 
     public async Task CreateSkillsetAsync(string skillsetName)
     {
-        //try
-        //{
-        //    await _indexerClient.DeleteSkillsetAsync(skillsetName);
-        //    Console.WriteLine("Existing skillset deleted.");
-        //}
-        //catch (RequestFailedException ex) when (ex.Status == 404)
-        //{
-        //    Console.WriteLine("No existing skillset to delete.");
-        //}
-
         var httpClient = _httpClientFactory.CreateClient();
 
-        //var apiVersion = "2025-08-01-preview";
         var url = $"{_searchOptions.Endpoint}/skillsets/{skillsetName}?api-version={_searchOptions.SkillSetApiVersion}";
 
         var systemMessage = "You are tasked with generating concise, accurate descriptions of images, figures, diagrams, or charts in documents. The goal is to capture the key information and meaning conveyed by the image without including extraneous details like style, colors, visual aesthetics, or size.\\n\\nInstructions:\\nContent Focus: Describe the core content and relationships depicted in the image.\\n\\nFor diagrams, specify the main elements and how they are connected or interact.\\nFor charts, highlight key data points, trends, comparisons, or conclusions.\\nFor figures or technical illustrations, identify the components and their significance.\\nClarity & Precision: Use concise language to ensure clarity and technical accuracy. Avoid subjective or interpretive statements.\\n\\nAvoid Visual Descriptors: Exclude details about:\\n- Colors, shading, and visual styles.\\n- Image size, layout, or decorative elements.\\n- Fonts, borders, and stylistic embellishments.\\n\\nContext: If relevant, relate the image to the broader content of the technical document or the topic it supports.\\n\\nExample Descriptions:\\nDiagram: \\\"A flowchart showing the four stages of a machine learning pipeline: data collection, preprocessing, model training, and evaluation, with arrows indicating the sequential flow of tasks.\\\"\\n\\nChart: \\\"A bar chart comparing the performance of four algorithms on three datasets, showing that Algorithm A consistently outperforms the others on Dataset 1.\\\"\\n\\nFigure: \\\"A labeled diagram illustrating the components of a transformer model, including the encoder, decoder, self-attention mechanism, and feedforward layers.\\\"";
