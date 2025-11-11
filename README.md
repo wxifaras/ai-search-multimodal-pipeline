@@ -88,12 +88,12 @@ The solution uses the following configuration sections in `local.settings.json` 
     "AIServices__CognitiveServicesEndpoint": "https://<your-cognitive-service>.cognitiveservices.azure.com/",
     "AIServices__CognitiveServicesKey": "<your-cognitive-services-key>",
     
-    // Azure OpenAI Settings
-    "OpenAI__ResourceUri": "https://<your-openai-resource>.openai.azure.com/",
-    "OpenAI__ApiKey": "<your-openai-key>",
-    "OpenAI__TextEmbeddingModel": "text-embedding-3-large",
-    "OpenAI__ChatCompletion__ResourceUri": "https://<your-openai-resource>.openai.azure.com/openai/deployments/<your-gpt-deployment>/chat/completions?api-version=2025-01-01-preview",
-    "OpenAI__ChatCompletion__ApiKey": "<your-openai-key>"
+    // Azure AI Foundry OpenAI Settings
+    "AzureOpenAI__ResourceUri": "https://<your-openai-resource>.openai.azure.com/",
+    "AzureOpenAI__ApiKey": "<your-openai-key>",
+    "AzureOpenAI__TextEmbeddingModel": "text-embedding-3-large",
+    "AzureOpenAI__ChatCompletion__ResourceUri": "https://<your-openai-resource>.openai.azure.com/openai/deployments/<your-gpt-deployment>/chat/completions?api-version=2025-01-01-preview",
+    "AzureOpenAI__ChatCompletion__ApiKey": "<your-openai-key>"
   }
 }
 ```
