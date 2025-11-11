@@ -1,7 +1,8 @@
-﻿using Azure;
+﻿using AISearch.MultimodalPipeline.Functions.Models;
+using Azure;
 using Azure.Search.Documents.Indexes;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using AISearch.MultimodalPipeline.Functions.Models;
 
 namespace AISearch.MultimodalPipeline.Functions.Services;
 
@@ -13,6 +14,7 @@ public class SkillsetService : ISkillsetService
     private readonly AIServicesOptions _aiServicesOptions;
     private readonly BlobStorageOptions _blobOptions;
     private readonly IHttpClientFactory _httpClientFactory;
+    private readonly ILogger<SkillsetService> _logger;
 
     public SkillsetService(
         SearchIndexerClient indexerClient,
@@ -20,7 +22,8 @@ public class SkillsetService : ISkillsetService
         IOptions<AzureOpenAIOptions> openAIOptions,
         IOptions<AIServicesOptions> aiServicesOptions,
         IOptions<BlobStorageOptions> blobOptions,
-        IHttpClientFactory httpClientFactory)
+        IHttpClientFactory httpClientFactory,
+        ILogger<SkillsetService> logger)
     {
         _indexerClient = indexerClient;
         _searchOptions = searchOptions.Value;
@@ -28,6 +31,7 @@ public class SkillsetService : ISkillsetService
         _aiServicesOptions = aiServicesOptions.Value;
         _blobOptions = blobOptions.Value;
         _httpClientFactory = httpClientFactory;
+        _logger = logger;
     }
 
     public async Task CreateSkillsetAsync(string skillsetName)
@@ -258,12 +262,14 @@ public class SkillsetService : ISkillsetService
 
         if (response.IsSuccessStatusCode)
         {
-            Console.WriteLine($"Skillset '{skillsetName}' created or updated successfully via REST API.");
+            _logger.LogInformation($"Skillset '{skillsetName}' created or updated successfully via REST API.");
         }
         else
         {
             var errorContent = await response.Content.ReadAsStringAsync();
-            throw new Exception($"Failed to create skillset. Status: {response.StatusCode}, Error: {errorContent}");
+            var message = $"Error creating skillset '{skillsetName}': {response.StatusCode} - {errorContent}";
+            _logger.LogError(message);
+            throw new Exception(message);
         }
     }
 }
