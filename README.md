@@ -78,6 +78,10 @@ The solution uses the following configuration sections in `local.settings.json` 
     "SearchService__Endpoint": "https://<your-search-service>.search.windows.net",
     "SearchService__ApiKey": "<your-search-api-key>",
     "SearchService__SkillSetApiVersion": "2025-08-01-preview",
+    "SearchService__IndexName": "multimodal-content-index",
+    "SearchService__DataSourceName": "multimodal-content-datasource",
+    "SearchService__SkillsetName": "multimodal-content-skillset",
+    "SearchService__IndexerName": "multimodal-content-indexer",
     
     // Blob Storage Settings
     "BlobStorage__ResourceId": "/subscriptions/<subscription-id>/resourceGroups/<rg>/providers/Microsoft.Storage/storageAccounts/<account>",
