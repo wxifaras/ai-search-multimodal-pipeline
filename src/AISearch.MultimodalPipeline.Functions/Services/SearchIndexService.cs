@@ -1,9 +1,6 @@
 ﻿using AISearch.MultimodalPipeline.Functions.Models;
-using AISearch.MultimodalPipeline.Functions.Services;
-using Azure;
 using Azure.Search.Documents.Indexes;
 using Azure.Search.Documents.Indexes.Models;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -108,7 +105,7 @@ public class SearchIndexService : ISearchIndexService
         var scalarQuantization = new ScalarQuantizationCompression("scalar-quant-8bit");
         vectorSearch.Compressions.Add(scalarQuantization);
 
-        var vectorizer = new AzureOpenAIVectorizer("demo-vectorizer")
+        var vectorizer = new AzureOpenAIVectorizer("multi-modal-vectorizer")
         {
             Parameters = new AzureOpenAIVectorizerParameters
             {
@@ -122,7 +119,7 @@ public class SearchIndexService : ISearchIndexService
 
         var vectorProfile = new VectorSearchProfile("hnsw", "defaulthnsw")
         {
-            VectorizerName = "demo-vectorizer",
+            VectorizerName = "multi-modal-vectorizer",
             CompressionName = "scalar-quant-8bit"
         };
         vectorSearch.Profiles.Add(vectorProfile);

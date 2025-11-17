@@ -1,6 +1,4 @@
 ﻿using AISearch.MultimodalPipeline.Functions.Models;
-using Azure;
-using Azure.Search.Documents.Indexes;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -8,7 +6,6 @@ namespace AISearch.MultimodalPipeline.Functions.Services;
 
 public class SkillsetService : ISkillsetService
 {
-    private readonly SearchIndexerClient _indexerClient;
     private readonly SearchServiceOptions _searchOptions;
     private readonly AzureOpenAIOptions _openAIOptions;
     private readonly AIServicesOptions _aiServicesOptions;
@@ -17,7 +14,6 @@ public class SkillsetService : ISkillsetService
     private readonly ILogger<SkillsetService> _logger;
 
     public SkillsetService(
-        SearchIndexerClient indexerClient,
         IOptions<SearchServiceOptions> searchOptions,
         IOptions<AzureOpenAIOptions> openAIOptions,
         IOptions<AIServicesOptions> aiServicesOptions,
@@ -25,7 +21,6 @@ public class SkillsetService : ISkillsetService
         IHttpClientFactory httpClientFactory,
         ILogger<SkillsetService> logger)
     {
-        _indexerClient = indexerClient;
         _searchOptions = searchOptions.Value;
         _openAIOptions = openAIOptions.Value;
         _aiServicesOptions = aiServicesOptions.Value;
@@ -34,7 +29,7 @@ public class SkillsetService : ISkillsetService
         _logger = logger;
     }
 
-    public async Task CreateSkillsetAsync(string skillsetName)
+    public async Task CreateSkillsetAsync(string skillsetName, string indexName)
     {
         var httpClient = _httpClientFactory.CreateClient();
 
@@ -185,7 +180,7 @@ public class SkillsetService : ISkillsetService
            "indexProjections": {
               "selectors": [
                 {
-                  "targetIndexName": "doc-intelligence-image-verbalization-index",
+                  "targetIndexName": "{{indexName}}",
                   "parentKeyFieldName": "text_document_id",
                   "sourceContext": "/document/text_sections/*",
                   "mappings": [    
@@ -208,7 +203,7 @@ public class SkillsetService : ISkillsetService
                   ]
                 },        
                 {
-                  "targetIndexName": "doc-intelligence-image-verbalization-index",
+                  "targetIndexName": "{{indexName}}",
                   "parentKeyFieldName": "image_document_id",
                   "sourceContext": "/document/normalized_images/*",
                   "mappings": [    

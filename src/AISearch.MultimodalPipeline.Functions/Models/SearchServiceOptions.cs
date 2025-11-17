@@ -14,4 +14,16 @@ public record SearchServiceOptions
 
     [Required]
     public string SkillSetApiVersion { get; set; } = string.Empty;
+
+    [Required]
+    public string IndexName { get; set; } = string.Empty;
+
+    [Required]
+    public string DataSourceName { get; set; } = string.Empty;
+
+    [Required]
+    public string SkillsetName { get; set; } = string.Empty;
+
+    [Required]
+    public string IndexerName { get; set; } = string.Empty;
 }

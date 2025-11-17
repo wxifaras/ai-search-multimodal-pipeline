@@ -2,5 +2,5 @@
 
 public interface ISkillsetService
 {
-    Task CreateSkillsetAsync(string skillsetName);
+    Task CreateSkillsetAsync(string skillsetName, string indexName);
 }

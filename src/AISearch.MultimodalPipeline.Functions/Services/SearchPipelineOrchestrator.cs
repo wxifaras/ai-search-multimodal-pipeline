@@ -1,5 +1,7 @@
-﻿using Azure;
+﻿using AISearch.MultimodalPipeline.Functions.Models;
+using Azure;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace AISearch.MultimodalPipeline.Functions.Services;
 
@@ -10,45 +12,48 @@ public class SearchPipelineOrchestrator : ISearchPipelineOrchestrator
     private readonly ISkillsetService _skillsetService;
     private readonly IIndexerService _indexerService;
     private readonly ILogger<SearchPipelineOrchestrator> _logger;
-
-    private const string IndexName = "doc-intelligence-image-verbalization-index";
-    private const string DataSourceName = "multimodality-datasource";
-    private const string SkillsetName = "doc-intelligence-image-verbalization-skillset";
-    private const string IndexerName = "multimodality-indexer";
+    private readonly SearchServiceOptions _searchOptions;
 
     public SearchPipelineOrchestrator(
         IDataSourceService dataSourceService,
         ISearchIndexService searchIndexService,
         ISkillsetService skillsetService,
         IIndexerService indexerService,
-        ILogger<SearchPipelineOrchestrator> logger)
+        ILogger<SearchPipelineOrchestrator> logger,
+        IOptions<SearchServiceOptions> options)
     {
         _dataSourceService = dataSourceService;
         _searchIndexService = searchIndexService;
         _skillsetService = skillsetService;
         _indexerService = indexerService;
         _logger = logger;
+        _searchOptions = options.Value;
     }
 
     public async Task SetupPipelineAsync()
     {
-        await _dataSourceService.CreateBlobDataSourceAsync(DataSourceName);
+        await _dataSourceService.CreateBlobDataSourceAsync(_searchOptions.DataSourceName);
         _logger.LogInformation("Blob data source created.");
 
-        await _searchIndexService.CreateSearchIndexAsync(IndexName);
+        await _searchIndexService.CreateSearchIndexAsync(_searchOptions.IndexName);
         _logger.LogInformation("Search index created.");
 
-        await _skillsetService.CreateSkillsetAsync(SkillsetName);
+        await _skillsetService.CreateSkillsetAsync(_searchOptions.SkillsetName, _searchOptions.IndexName);
         _logger.LogInformation("Skillset created.");
 
-        await _indexerService.CreateIndexerAsync(IndexerName, DataSourceName, IndexName, SkillsetName);
+        await _indexerService.CreateIndexerAsync(
+            _searchOptions.IndexerName, 
+            _searchOptions.DataSourceName, 
+            _searchOptions.IndexName, 
+            _searchOptions.SkillsetName);
+
         _logger.LogInformation("Indexer created.");
     }
 
     public async Task RunIndexerAsync()
     {
         _logger.LogInformation("Running indexer for new files...");
-        await _indexerService.RunIndexerAsync(IndexerName);
+        await _indexerService.RunIndexerAsync(_searchOptions.IndexerName);
         _logger.LogInformation("Indexer run initiated.");
     }
 
